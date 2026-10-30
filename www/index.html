@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1013">
+<title>استوديو الذكاء</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.5"/><path d="M4 18l5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="3"/><path d="M16 10l5-3v10l-5-3z"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14a2 2 0 012 2v9a2 2 0 01-2 2h-8l-5 3v-3H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></symbol>
+  <symbol id="i-lib" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-set" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
+</svg>
+
+<header class="top">
+  <h1><svg class="i"><use href="#i-spark"/></svg> استوديو الذكاء</h1>
+  <span class="chip-status" id="providerChip">…</span>
+</header>
+
+<main>
+
+<!-- ============ صور ============ -->
+<section id="tab-image" class="tab active">
+  <div class="card">
+    <label class="f"><span>صِف الصورة التي تريدها</span>
+      <textarea id="imgPrompt" placeholder="مثال: قطة برتقالية تجلس على سطح قديم وقت الغروب"></textarea>
+    </label>
+    <div class="row">
+      <button class="btn sm" id="imgEnhance"><svg class="i"><use href="#i-spark"/></svg> حسّن الوصف بالإنجليزية</button>
+      <span class="hint">النماذج تفهم الإنجليزية أفضل</span>
+    </div>
+    <div>
+      <p class="hint" style="margin-bottom:6px">النمط</p>
+      <div class="chips" id="imgStyles"></div>
+    </div>
+    <div>
+      <p class="hint" style="margin-bottom:6px">المقاس</p>
+      <div class="seg" id="imgAspect">
+        <button data-v="1:1" class="on">1:1</button><button data-v="9:16">9:16</button>
+        <button data-v="16:9">16:9</button><button data-v="3:4">3:4</button>
+      </div>
+    </div>
+    <div class="row">
+      <label class="f grow"><span>البذرة (اتركها فارغة للعشوائي)</span><input type="number" id="imgSeed" inputmode="numeric" placeholder="عشوائي"></label>
+    </div>
+    <button class="btn primary block" id="imgGo"><svg class="i"><use href="#i-spark"/></svg> ولّد الصورة</button>
+    <button class="btn block hidden" id="imgStop"><svg class="i"><use href="#i-stop"/></svg> إلغاء</button>
+    <div class="status" id="imgStatus"></div>
+  </div>
+  <div class="card result hidden" id="imgResult">
+    <img id="imgOut" alt="الصورة المولّدة">
+    <div class="row">
+      <button class="btn sm" id="imgSave"><svg class="i"><use href="#i-down"/></svg> حفظ / مشاركة</button>
+      <button class="btn sm" id="imgAnimate"><svg class="i"><use href="#i-video"/></svg> حرّكها</button>
+      <button class="btn sm" id="imgSame"><svg class="i"><use href="#i-refresh"/></svg> نفس البذرة</button>
+    </div>
+    <p class="hint">تُحفظ تلقائيًا في «مكتبتي».</p>
+  </div>
+</section>
+
+<!-- ============ فيديو ============ -->
+<section id="tab-video" class="tab">
+  <div class="seg" id="vidMode">
+    <button data-v="story" class="on">قصة ← فيديو</button>
+    <button data-v="animate">تحريك صورة</button>
+    <button data-v="ai">فيديو ذكاء اصطناعي</button>
+  </div>
+
+  <!-- قصة -->
+  <div id="vm-story">
+    <div class="card">
+      <h2>1) اكتب القصة</h2>
+      <textarea id="stText" style="min-height:140px" placeholder="اكتب قصتك أو سيناريو المشهد هنا…"></textarea>
+      <div class="grid2">
+        <label class="f"><span>عدد المشاهد</span>
+          <select id="stCount"><option value="0">تلقائي</option><option value="4">4</option><option value="6">6</option><option value="8">8</option><option value="12">12</option><option value="20">20</option></select></label>
+        <label class="f"><span>مدة المشهد (ث)</span><input type="number" id="stSecs" value="6" min="2" max="30" inputmode="numeric"></label>
+      </div>
+      <div>
+        <p class="hint" style="margin-bottom:6px">المقاس</p>
+        <div class="seg" id="stAspect"><button data-v="9:16" class="on">طولي 9:16</button><button data-v="16:9">عرضي 16:9</button><button data-v="1:1">مربع</button></div>
+      </div>
+      <div>
+        <p class="hint" style="margin-bottom:6px">النمط</p>
+        <div class="chips" id="stStyles"></div>
+      </div>
+      <button class="btn primary block" id="stAnalyze"><svg class="i"><use href="#i-spark"/></svg> حلّل القصة إلى مشاهد</button>
+      <div class="status" id="stStatus"></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 class="grow">2) الشخصيات</h2><button class="btn sm" id="chAdd"><svg class="i"><use href="#i-plus"/></svg> شخصية</button></div>
+      <p class="hint">وصف ثابت لكل شخصية يُضاف لكل مشهد تظهر فيه مع بذرة ثابتة، فيعطي ثباتًا تقريبيًا في الشكل وليس مطابقة تامة.</p>
+      <div id="chList"></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 class="grow">3) المشاهد <span class="hint" id="stTotal"></span></h2>
+        <button class="btn sm" id="scAdd"><svg class="i"><use href="#i-plus"/></svg> مشهد</button></div>
+      <div id="scList"></div>
+      <div class="row">
+        <button class="btn primary grow" id="scGenAll"><svg class="i"><use href="#i-image"/></svg> ولّد كل الصور</button>
+        <button class="btn" id="scExtend"><svg class="i"><use href="#i-plus"/></svg> مدّد القصة</button>
+      </div>
+      <button class="btn block hidden" id="scStop"><svg class="i"><use href="#i-stop"/></svg> إيقاف التوليد</button>
+      <div class="progress hidden" id="scProg"><i></i></div>
+      <div class="status" id="scStatus"></div>
+    </div>
+
+    <div class="card">
+      <h2>4) تركيب الفيديو</h2>
+      <div class="row">
+        <label class="row"><input type="checkbox" id="rdSubs" checked> ترجمة نصية</label>
+        <label class="row"><input type="checkbox" id="rdMusic"> موسيقى هادئة</label>
+        <select id="rdFps" style="width:auto"><option value="30">30 إطار</option><option value="24">24 إطار</option></select>
+      </div>
+      <div class="warn">يُسجَّل الفيديو على جهازك بزمن حقيقي: فيديو مدته دقيقتان يحتاج دقيقتين تقريبًا. أبقِ التطبيق مفتوحًا والشاشة تعمل أثناء التسجيل.</div>
+      <button class="btn primary block" id="rdGo"><svg class="i"><use href="#i-video"/></svg> ركّب الفيديو</button>
+      <button class="btn block hidden" id="rdStop"><svg class="i"><use href="#i-stop"/></svg> إلغاء</button>
+      <div class="progress hidden" id="rdProg"><i></i></div>
+      <div class="status" id="rdStatus"></div>
+      <div class="result hidden" id="rdResult">
+        <video id="rdVideo" controls playsinline></video>
+        <div class="row" style="margin-top:10px"><button class="btn sm" id="rdSave"><svg class="i"><use href="#i-down"/></svg> حفظ / مشاركة</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- تحريك صورة -->
+  <div id="vm-animate" class="hidden">
+    <div class="card">
+      <h2>تحريك صورة (تكبير وحركة كاميرا)</h2>
+      <p class="hint">حركة بسيطة على الصورة ليتحول الثابت إلى مقطع. ليست حركة ذكاء اصطناعي حقيقية للشخصيات.</p>
+      <div class="row"><button class="btn" id="anPick">اختر من المكتبة</button><label class="btn" for="anFile">ارفع صورة</label><input type="file" id="anFile" accept="image/*" class="hidden"></div>
+      <div class="preview"><img id="anImg" class="hidden" alt=""></div>
+      <label class="f"><span>نص يظهر على الفيديو (اختياري)</span><input type="text" id="anText"></label>
+      <div class="grid2">
+        <label class="f"><span>الحركة</span><select id="anMotion"></select></label>
+        <label class="f"><span>المدة (ث)</span><input type="number" id="anSecs" value="8" min="2" max="120" inputmode="numeric"></label>
+      </div>
+      <div class="seg" id="anAspect"><button data-v="9:16" class="on">9:16</button><button data-v="16:9">16:9</button><button data-v="1:1">1:1</button></div>
+      <button class="btn primary block" id="anGo"><svg class="i"><use href="#i-video"/></svg> أنشئ المقطع</button>
+      <div class="progress hidden" id="anProg"><i></i></div>
+      <div class="status" id="anStatus"></div>
+      <div class="result hidden" id="anResult"><video id="anVideo" controls playsinline></video>
+        <div class="row" style="margin-top:10px"><button class="btn sm" id="anSave"><svg class="i"><use href="#i-down"/></svg> حفظ / مشاركة</button></div></div>
+    </div>
+  </div>
+
+  <!-- فيديو ذكاء اصطناعي -->
+  <div id="vm-ai" class="hidden">
+    <div class="card">
+      <h2>فيديو حقيقي بالذكاء الاصطناعي (عبر Puter)</h2>
+      <div class="warn">هذا الوضع <b>ليس مجانيًا</b>: كل توليد يخصم من رصيد حسابك في Puter. استخدم «وضع التجربة» أولًا للتأكد من عمل الاتصال دون خصم.</div>
+      <label class="f"><span>وصف المشهد والحركة</span><textarea id="aiPrompt" placeholder="A fox running through snow at dusk, cinematic, slow camera follow"></textarea></label>
+      <div class="grid2">
+        <label class="f"><span>النموذج</span><select id="aiModel">
+          <option value="">الافتراضي (Wan 2.7)</option>
+          <option value="seedance-2-0-mini">Seedance 2.0 mini</option>
+          <option value="kling-3.0-turbo">Kling 3.0 turbo</option>
+          <option value="minimax-h3-lite">MiniMax H3 lite</option></select></label>
+        <label class="f"><span>المدة (ث)</span><input type="number" id="aiSecs" value="5" min="2" max="15" inputmode="numeric"></label>
+      </div>
+      <div class="grid2">
+        <label class="f"><span>الدقة</span><select id="aiSize"><option value="720p">720p</option><option value="480p">480p</option><option value="1080p">1080p</option></select></label>
+        <label class="f"><span>صورة بداية (اختياري)</span>
+          <span class="row"><button class="btn sm" id="aiPick">من المكتبة</button><label class="btn sm" for="aiFile">ارفع</label><input type="file" id="aiFile" accept="image/*" class="hidden"></span></label>
+      </div>
+      <div class="preview"><img id="aiImg" class="hidden" alt=""></div>
+      <label class="row"><input type="checkbox" id="aiTest" checked> وضع التجربة (مقطع عيّنة بلا خصم)</label>
+      <button class="btn primary block" id="aiGo"><svg class="i"><use href="#i-video"/></svg> ولّد الفيديو</button>
+      <div class="status" id="aiStatus"></div>
+      <div class="result hidden" id="aiResult"><video id="aiVideo" controls playsinline></video>
+        <div class="row" style="margin-top:10px">
+          <button class="btn sm" id="aiSave"><svg class="i"><use href="#i-down"/></svg> حفظ / مشاركة</button>
+          <button class="btn sm" id="aiExtend"><svg class="i"><use href="#i-plus"/></svg> أكمل المشهد</button></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ دردشة ============ -->
+<section id="tab-chat" class="tab">
+  <div class="row"><span class="hint grow">اسأل أو اطلب كتابة قصة أو سيناريو.</span><button class="btn sm" id="chatNew">محادثة جديدة</button></div>
+  <div class="chat-log" id="chatLog"></div>
+  <div class="chat-bar">
+    <textarea id="chatIn" rows="1" placeholder="اكتب رسالتك…"></textarea>
+    <button class="btn primary" id="chatSend" aria-label="إرسال"><svg class="i"><use href="#i-send"/></svg></button>
+  </div>
+</section>
+
+<!-- ============ مكتبتي ============ -->
+<section id="tab-library" class="tab">
+  <div class="seg" id="libFilter"><button data-v="all" class="on">الكل</button><button data-v="image">صور</button><button data-v="video">فيديو</button></div>
+  <div class="lib" id="libGrid"></div>
+  <div class="empty hidden" id="libEmpty">لا يوجد شيء بعد. ما تولّده يُحفظ هنا على جهازك.</div>
+</section>
+
+<!-- ============ إعدادات ============ -->
+<section id="tab-settings" class="tab">
+  <div class="card">
+    <h2>توليد الصور</h2>
+    <label class="f"><span>المزوّد</span>
+      <select id="setImgProvider">
+        <option value="pollinations">Pollinations، مجاني بلا حساب (حدّ ~صورة كل 15 ثانية)</option>
+        <option value="horde">AI Horde، مجاني ومجتمعي (بطيء وتجريبي)</option>
+        <option value="cloudflare">Cloudflare Worker خاص بك (~230 صورة يوميًا مجانًا)</option>
+        <option value="puter">Puter (حسابك ورصيدك هناك)</option>
+      </select></label>
+    <div id="setCf" class="hidden">
+      <label class="f"><span>رابط الـ Worker</span><input type="url" id="setCfUrl" placeholder="https://xxx.workers.dev" dir="ltr"></label>
+      <label class="f"><span>كلمة السر (إن وضعتها في الـ Worker)</span><input type="password" id="setCfSecret" dir="ltr"></label>
+    </div>
+    <label class="f"><span>الفاصل بين طلبات Pollinations (ثانية)</span><input type="number" id="setGap" min="5" max="60" inputmode="numeric"></label>
+    <button class="btn block" id="testImg">اختبار توليد الصور</button>
+  </div>
+
+  <div class="card">
+    <h2>الدردشة وتحليل القصص</h2>
+    <label class="f"><span>المزوّد</span>
+      <select id="setChatProvider">
+        <option value="pollinations">Pollinations (بلا حساب، قد يتغيّر)</option>
+        <option value="puter">Puter (حسابك)</option>
+      </select></label>
+    <label class="f"><span>نموذج Puter للدردشة (اتركه فارغًا للافتراضي)</span><input type="text" id="setPuterChat" dir="ltr" placeholder="openai/gpt-5.4-nano"></label>
+    <button class="btn block" id="testChat">اختبار الدردشة</button>
+  </div>
+
+  <div class="card">
+    <h2>حساب Puter</h2>
+    <p class="hint" id="puterState">غير متصل.</p>
+    <div class="row"><button class="btn" id="puterIn">تسجيل الدخول</button><button class="btn" id="puterOut">خروج</button></div>
+    <p class="hint">قد لا تفتح نافذة تسجيل الدخول داخل تطبيق APK. إن حدث ذلك، سجّل الدخول من نسخة المتصفح مرة واحدة.</p>
+  </div>
+
+  <div class="card">
+    <h2>التطبيق</h2>
+    <button class="btn block hidden" id="installBtn">ثبّت التطبيق على الشاشة الرئيسية</button>
+    <button class="btn block danger" id="libClear">حذف كل محتوى المكتبة</button>
+    <p class="hint">كل الإعدادات والملفات تبقى على جهازك فقط.</p>
+  </div>
+</section>
+
+</main>
+
+<nav class="bottom" aria-label="التنقل">
+  <button data-tab="image" class="on"><svg class="i"><use href="#i-image"/></svg>صور</button>
+  <button data-tab="video"><svg class="i"><use href="#i-video"/></svg>فيديو</button>
+  <button data-tab="chat"><svg class="i"><use href="#i-chat"/></svg>دردشة</button>
+  <button data-tab="library"><svg class="i"><use href="#i-lib"/></svg>مكتبتي</button>
+  <button data-tab="settings"><svg class="i"><use href="#i-set"/></svg>إعدادات</button>
+</nav>
+
+<div id="toast" aria-live="polite"></div>
+
+<dialog id="viewer"><div class="inner">
+  <div id="viewerMedia"></div>
+  <p class="hint" id="viewerMeta" style="word-break:break-word"></p>
+  <div class="row">
+    <button class="btn sm" id="vwSave"><svg class="i"><use href="#i-share"/></svg> حفظ / مشاركة</button>
+    <button class="btn sm hidden" id="vwAnimate"><svg class="i"><use href="#i-video"/></svg> حرّكها</button>
+    <button class="btn sm danger" id="vwDel"><svg class="i"><use href="#i-trash"/></svg> حذف</button>
+    <button class="btn sm" id="vwClose">إغلاق</button>
+  </div>
+</div></dialog>
+
+<dialog id="picker"><div class="inner">
+  <h2 style="margin:0;font-size:16px">اختر صورة من المكتبة</h2>
+  <div class="lib" id="pickGrid"></div>
+  <button class="btn block" id="pickClose">إلغاء</button>
+</div></dialog>
+
+<script src="js/util.js"></script>
+<script src="js/db.js"></script>
+<script src="js/providers.js"></script>
+<script src="js/videomaker.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
